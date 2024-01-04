@@ -1,5 +1,4 @@
 const User = require("../models/User");
-const z = require("zod");
 const { validationResult, check } = require("express-validator");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
@@ -49,7 +48,9 @@ exports.createUser = [
       };
       res.status(200).json(response);
     } catch (err) {
-      res.status(500).json(err);
+      if (err) {
+        res.status(500).json(err);
+      }
     }
   },
 ];
@@ -64,7 +65,7 @@ exports.logUser = async (req, res) => {
 
     if (await bcrypt.compare(req.body.password, user.password)) {
       const accessToken = jwt.sign(
-        { username: user.username, email: user.email },
+        { username: user.username, email: user.email, id: user._id },
         process.env.key,
         { expiresIn: "10h" }
       );
@@ -76,7 +77,9 @@ exports.logUser = async (req, res) => {
       return res.status(401).json({ msg: "Password is incorrect!" });
     }
   } catch (error) {
-    console.error("Error in logUser:", error);
-    return res.status(500).json({ msg: "Internal Server Error" });
+    // console.error("Error in logUser:", error);
+    if (error) {
+      res.status(500).json({ msg: "Internal Server Error" });
+    }
   }
 };
