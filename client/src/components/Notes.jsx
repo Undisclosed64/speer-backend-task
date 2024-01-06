@@ -2,10 +2,13 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { IoSearch } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
+import { useNoteContext } from "../NoteContext";
 
 const Notes = () => {
-  const [notes, setNotes] = useState([]);
+  // const [notes, setNotes] = useState([]);
   const navigate = useNavigate();
+  const { notes } = useNoteContext();
+
   const colors = [
     "bg-[#ffa67e]",
     "bg-[#fccf81]",
@@ -15,23 +18,23 @@ const Notes = () => {
   ];
 
   useEffect(() => {
-    const headers = {
-      Authorization:
-        "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IkpvaG4iLCJlbWFpbCI6ImpvaG5AZ21haWwuY29tIiwiaWQiOiI2NTk4YzlmMTI2ZDVkNjhmZTE4ZTYyZGYiLCJpYXQiOjE3MDQ1MTE5OTgsImV4cCI6MTcwNDU0Nzk5OH0.FX3BbD84JxvvLj6_PsUQggIiwD3OrSIhs0xcgMfdJkE",
-    };
-    const getNotes = async () => {
-      try {
-        const response = await axios.get(`http://localhost:5000/api/notes`, {
-          headers,
-        });
-        console.log(response.data);
-        setNotes(response.data);
-      } catch (err) {
-        console.log(err);
-      }
-    };
-    getNotes();
-  }, []);
+    // const headers = {
+    //   Authorization:
+    //     "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IkpvaG4iLCJlbWFpbCI6ImpvaG5AZ21haWwuY29tIiwiaWQiOiI2NTk4YzlmMTI2ZDVkNjhmZTE4ZTYyZGYiLCJpYXQiOjE3MDQ1MTE5OTgsImV4cCI6MTcwNDU0Nzk5OH0.FX3BbD84JxvvLj6_PsUQggIiwD3OrSIhs0xcgMfdJkE",
+    // };
+    // const getNotes = async () => {
+    //   try {
+    //     const response = await axios.get(`http://localhost:5000/api/notes`, {
+    //       headers,
+    //     });
+    //     console.log(response.data);
+    //     // setNotes(response.data);
+    //   } catch (err) {
+    //     console.log(err);
+    //   }
+    // };
+    // getNotes();
+  }, [notes]);
 
   const formatDate = (dateString) => {
     const options = { month: "short", day: "numeric", year: "numeric" };
