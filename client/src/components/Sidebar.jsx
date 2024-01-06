@@ -1,11 +1,19 @@
 import { IoIosAddCircle } from "react-icons/io";
 import { IoMdClose } from "react-icons/io";
 import { IoCheckmarkSharp } from "react-icons/io5";
+import axios from "axios";
+import { useNoteContext } from "../NoteContext";
 
 import { useState } from "react";
 
 const Sidebar = () => {
   const [isAddNoteModalOpen, setAddNoteModalOpen] = useState(false);
+  const [formData, setFormData] = useState({
+    title: "",
+    content: "",
+  });
+  const { addNote } = useNoteContext();
+
   const colors = [
     "bg-[#ffa67e]",
     "bg-[#fccf81]",
@@ -13,13 +21,34 @@ const Sidebar = () => {
     "bg-[#e7f19a]",
     "bg-[#05d9fe]",
   ];
-
+  const headers = {
+    Authorization:
+      "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IkpvaG4iLCJlbWFpbCI6ImpvaG5AZ21haWwuY29tIiwiaWQiOiI2NTk4YzlmMTI2ZDVkNjhmZTE4ZTYyZGYiLCJpYXQiOjE3MDQ1MTE5OTgsImV4cCI6MTcwNDU0Nzk5OH0.FX3BbD84JxvvLj6_PsUQggIiwD3OrSIhs0xcgMfdJkE",
+  };
   const openAddNoteModal = () => {
     setAddNoteModalOpen(true);
   };
 
   const closeAddNoteModal = () => {
     setAddNoteModalOpen(false);
+  };
+
+  const saveNoteHandler = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post(
+        `http://localhost:5000/api/notes`,
+        formData,
+        {
+          headers,
+        }
+      );
+      //   console.log(response.data);
+      addNote(response.data);
+      closeAddNoteModal();
+    } catch (err) {
+      console.log(err);
+    }
   };
   const sidebarStyle = {
     width: isAddNoteModalOpen ? "30%" : "16.666667%",
@@ -47,7 +76,9 @@ const Sidebar = () => {
             />
             {/* Save Button */}
             <button className="bg-brightblack text-white px-4 py-2 rounded-full flex items-center justify-between text-sm transition-all duration-300 hover:bg-[#e5499d]">
-              <span className="mr-2">Save</span>
+              <span className="mr-2" onClick={(e) => saveNoteHandler(e)}>
+                Save
+              </span>
               <IoCheckmarkSharp />
             </button>
           </div>
@@ -57,11 +88,17 @@ const Sidebar = () => {
               type="text"
               placeholder="New note title"
               className="mb-2 p-3 bg-gray-100 border-none focus:outline-none rounded-md text-xl placeholder-gray-500 lg:w-full"
+              onChange={(e) =>
+                setFormData({ ...formData, title: e.target.value })
+              }
             />
             {/* Content Input */}
             <textarea
               placeholder="New note content"
               className="mb-2 p-3 bg-gray-100 w-full resize-none border-none focus:outline-none rounded-md text-xl placeholder-gray-500"
+              onChange={(e) =>
+                setFormData({ ...formData, content: e.target.value })
+              }
             />
           </div>
 
