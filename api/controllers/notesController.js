@@ -1,4 +1,7 @@
 const Note = require("../models/Notes");
+const shortid = require("shortid"); // Import a library for generating short and unique identifiers
+const nodemailer = require("nodemailer"); //
+const baseURL = "http://localhost:5000";
 
 //post note
 exports.createNote = async (req, res) => {
@@ -31,7 +34,7 @@ exports.getAllNotes = async (req, res) => {
   try {
     const userId = req.user.id;
 
-    const notes = await Note.find({ user: userId }).populate("user").exec();
+    const notes = await Note.find({ user: userId }).exec();
 
     //console.log(notes);
     res.status(200).json(notes);
@@ -55,7 +58,7 @@ exports.getNote = async (req, res) => {
     if (!note) {
       return res.status(404).json({ error: "Note not found" });
     }
-    console.log(note);
+    // console.log(note);
     res.status(200).json(note);
   } catch (err) {
     //console.error(err);
@@ -106,6 +109,83 @@ exports.deleteNote = async (req, res) => {
     res.status(200).json({ msg: "successfully deleted" });
   } catch (err) {
     console.error(err);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+exports.shareNote = async (req, res) => {
+  try {
+    const noteId = req.params.id;
+
+    // Find the note by ID
+    const note = await Note.findById(noteId).exec();
+
+    // Check if the note exists
+    if (!note) {
+      return res.status(404).json({ error: "Note not found" });
+    }
+
+    // Generate a unique shareable link
+    const shareableLink = shortid.generate();
+
+    const sharedNote = await Note.updateOne(
+      { _id: noteId },
+      { $set: { shareableLink: shareableLink } },
+      { upsert: true }
+    ).exec();
+
+    const fullShareableLink = `http://localhost:5173/notes/shared/${shareableLink}`;
+
+    // Provide the shareable link to the user
+    res.status(200).json({ fullShareableLink });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+exports.sharedNoteViewer = async (req, res) => {
+  try {
+    const linkId = req.params.id;
+    console.log(linkId);
+    // Check if the provided ID is not valid
+    if (!linkId) {
+      return res.status(400).json({ error: "Invalid ID provided" });
+    }
+
+    const note = await Note.findOne({ shareableLink: linkId })
+      .populate("user")
+      .exec();
+    console.log(note);
+    // Check if the note with the provided ID was not found
+    if (!note) {
+      console.log("not found");
+      return res.status(404).json({ error: "Note not found" });
+    }
+    // console.log(note);
+    res.status(200).json(note);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+exports.noteByKeyword = async (req, res) => {
+  try {
+    const keyword = req.query.q;
+    if (!keyword) {
+      return res.status(400).json({ error: "Keyword not provided!" });
+    }
+
+    const notes = await Note.find({
+      $or: [
+        { title: { $regex: "\\b" + keyword + "\\b", $options: "i" } },
+        { content: { $regex: "\\b" + keyword + "\\b", $options: "i" } },
+      ],
+    }).exec();
+    console.log(notes);
+    res.status(200).json(notes);
+  } catch (err) {
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
