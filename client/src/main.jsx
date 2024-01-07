@@ -5,6 +5,7 @@ import Note from "./components/Note.jsx";
 import "./index.css";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Notes from "./components/Notes.jsx";
+import SharedNoteView from "./components/SharedNoteView.jsx";
 
 const router = createBrowserRouter([
   {
@@ -20,6 +21,10 @@ const router = createBrowserRouter([
         element: <Note />,
       },
     ],
+  },
+  {
+    path: "/notes/shared/:id",
+    element: <SharedNoteView />,
   },
 ]);
 
