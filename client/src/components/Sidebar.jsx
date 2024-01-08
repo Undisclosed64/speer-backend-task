@@ -3,6 +3,8 @@ import { IoMdClose } from "react-icons/io";
 import { IoCheckmarkSharp } from "react-icons/io5";
 import axios from "axios";
 import { useNoteContext } from "../NoteContext";
+import { MdOutlineStickyNote2 } from "react-icons/md";
+import { FeedbackDisplay } from "./FeedbackDisplay";
 
 import { useState } from "react";
 
@@ -12,7 +14,10 @@ const Sidebar = () => {
     title: "",
     content: "",
   });
-  const { addNote } = useNoteContext();
+  const { addNote, accessToken } = useNoteContext();
+  const [err, setErr] = useState(null);
+  const [success, setSuccess] = useState(null);
+  const baseURL = import.meta.env.VITE_SCRIBE_BASE_URL;
 
   const colors = [
     "bg-[#ffa67e]",
@@ -22,8 +27,7 @@ const Sidebar = () => {
     "bg-[#05d9fe]",
   ];
   const headers = {
-    Authorization:
-      "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IkpvaG4iLCJlbWFpbCI6ImpvaG5AZ21haWwuY29tIiwiaWQiOiI2NTk4YzlmMTI2ZDVkNjhmZTE4ZTYyZGYiLCJpYXQiOjE3MDQ1MTE5OTgsImV4cCI6MTcwNDU0Nzk5OH0.FX3BbD84JxvvLj6_PsUQggIiwD3OrSIhs0xcgMfdJkE",
+    Authorization: `Bearer ${accessToken}`,
   };
   const openAddNoteModal = () => {
     setAddNoteModalOpen(true);
@@ -35,35 +39,54 @@ const Sidebar = () => {
 
   const saveNoteHandler = async (e) => {
     e.preventDefault();
+    if (!formData.title || !formData.content) {
+      setErr("Please fill in the fields");
+      setTimeout(() => {
+        setErr(null);
+      }, 1500);
+      return;
+    }
+
     try {
-      const response = await axios.post(
-        `http://localhost:5000/api/notes`,
-        formData,
-        {
-          headers,
-        }
-      );
+      const response = await axios.post(`${baseURL}/api/notes`, formData, {
+        headers,
+      });
       //   console.log(response.data);
       addNote(response.data);
+      // console.log(response);
+      setSuccess("Note created successfully!");
+      setFormData({ title: "", content: "" });
+      setTimeout(() => {
+        setSuccess(null);
+      }, 1500);
       closeAddNoteModal();
     } catch (err) {
-      console.log(err);
+      setErr(err.response.data.message);
+      setTimeout(() => {
+        setErr(null);
+      }, 1500);
+      // console.log(err);
     }
   };
+
   const sidebarStyle = {
     width: isAddNoteModalOpen ? "30%" : "16.666667%",
+    minHeight: "100vh",
     transition: "width 0.3s ease-in-out",
   };
   return (
     <div
-      className="sidebar w-1/6 border-r border-[#e5e5e5] flex flex-col items-center gap-24 p-5 h-screen"
+      className="sidebar w-1/6  border-r border-[#e5e5e5] flex flex-col items-center gap-20 p-5"
       style={sidebarStyle}
     >
-      <div className="brand-name">
-        <h2 className="text-3xl font-bold">Scribe</h2>
+      <div className="brand-name flex items-center text-brightblack">
+        <div className="text-5xl mr-2">
+          <MdOutlineStickyNote2 className="text-blue" />
+        </div>
+        <h2 className="text-4xl font-bold">Scribe</h2>
       </div>
       <div className="add-btn cursor-pointer" onClick={openAddNoteModal}>
-        <IoIosAddCircle className="text-5xl" />
+        <IoIosAddCircle className="text-5xl text-brightblack" />
       </div>
       {/* Add Note Modal */}
 
@@ -75,10 +98,11 @@ const Sidebar = () => {
               onClick={closeAddNoteModal}
             />
             {/* Save Button */}
-            <button className="bg-brightblack text-white px-4 py-2 rounded-full flex items-center justify-between text-sm transition-all duration-300 hover:bg-[#e5499d]">
-              <span className="mr-2" onClick={(e) => saveNoteHandler(e)}>
-                Save
-              </span>
+            <button
+              className="bg-brightblack text-white px-4 py-2 rounded-full flex items-center justify-between text-sm transition-all duration-300 focus:outline-none hover:bg-[#333] active:bg-[#222]"
+              onClick={(e) => saveNoteHandler(e)}
+            >
+              <span className="mr-2">Save</span>
               <IoCheckmarkSharp />
             </button>
           </div>
@@ -102,13 +126,13 @@ const Sidebar = () => {
             />
           </div>
 
-          <div className="modal-footer flex flex-col p-4">
-            <div className="line w-full border-t border-gray-300 mb-2"></div>
-            <div className="dots flex justify-between">
+          <div className="modal-footer flex flex-col p-4 ">
+            <div className="line w-full border-t border-gray-100 mb-2"></div>
+            <div className="dots flex justify-around mt-2">
               {[...Array(5)].map((_, index) => (
                 <div
                   key={index}
-                  className={`dot w-7 h-7 rounded-full  ml-2 ${
+                  className={`dot w-3 h-3 rounded-full ml-1 ${
                     colors[index % colors.length]
                   }`}
                 ></div>
@@ -117,6 +141,8 @@ const Sidebar = () => {
           </div>
         </div>
       )}
+      {err ? <FeedbackDisplay error={err} /> : ""}
+      {success ? <FeedbackDisplay success={success} /> : ""}
     </div>
   );
 };

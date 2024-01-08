@@ -156,16 +156,16 @@ exports.sharedNoteViewer = async (req, res) => {
     const note = await Note.findOne({ shareableLink: linkId })
       .populate("user")
       .exec();
-    console.log(note);
+    // console.log(note);
     // Check if the note with the provided ID was not found
     if (!note) {
-      console.log("not found");
+      // console.log("not found");
       return res.status(404).json({ error: "Note not found" });
     }
     // console.log(note);
     res.status(200).json(note);
   } catch (err) {
-    console.error(err);
+    // console.error(err);
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
@@ -173,19 +173,26 @@ exports.sharedNoteViewer = async (req, res) => {
 exports.noteByKeyword = async (req, res) => {
   try {
     const keyword = req.query.q;
+    const userid = req.user.id;
     if (!keyword) {
       return res.status(400).json({ error: "Keyword not provided!" });
     }
 
     const notes = await Note.find({
+      user: userid,
       $or: [
         { title: { $regex: "\\b" + keyword + "\\b", $options: "i" } },
         { content: { $regex: "\\b" + keyword + "\\b", $options: "i" } },
       ],
     }).exec();
-    console.log(notes);
+
+    if (!notes) {
+      return res.status(404).json({ error: "No notes found for the keyword." });
+    }
+
     res.status(200).json(notes);
   } catch (err) {
+    console.error(err);
     res.status(500).json({ error: "Internal Server Error" });
   }
 };

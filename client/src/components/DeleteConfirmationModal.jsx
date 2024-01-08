@@ -6,13 +6,10 @@ export const DeleteConfirmationModal = ({ onCancel, onConfirm }) => {
           Are you sure you want to delete this note?
         </p>
         <div className="flex justify-end">
-          <button
-            className="text-gray-500 hover:underline mr-4"
-            onClick={onCancel}
-          >
+          <button className="text-gray-500  mr-4" onClick={onCancel}>
             Cancel
           </button>
-          <button className="text-red-500 hover:underline" onClick={onConfirm}>
+          <button className="text-red-500" onClick={onConfirm}>
             Delete
           </button>
         </div>

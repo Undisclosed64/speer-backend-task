@@ -21,6 +21,7 @@ exports.createUser = [
     // check for validation errors
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
+      console.log(errors);
       return res.status(400).json({
         errors: errors.array(),
       });
@@ -49,6 +50,7 @@ exports.createUser = [
       res.status(200).json(response);
     } catch (err) {
       if (err) {
+        console.log(err);
         res.status(500).json(err);
       }
     }
@@ -57,29 +59,40 @@ exports.createUser = [
 
 exports.logUser = async (req, res) => {
   try {
-    const user = await User.findOne({ email: req.body.email });
+    let user;
 
-    if (!user) {
-      return res.status(404).json({ msg: "Email is not registered!" });
-    }
+    if (req.body.email === "johndoe@gmail.com") {
+      // for demo user, skip password check
+      user = await User.findOne({ email: "johndoe@gmail.com" });
 
-    if (await bcrypt.compare(req.body.password, user.password)) {
-      const accessToken = jwt.sign(
-        { username: user.username, email: user.email, id: user._id },
-        process.env.key,
-        { expiresIn: "10h" }
-      );
-      return res.status(200).json({
-        user,
-        accessToken,
-      });
+      if (!user) {
+        return res.status(404).json({ msg: "Demo user not found!" });
+      }
     } else {
-      return res.status(401).json({ msg: "Password is incorrect!" });
+      // for regular user
+      user = await User.findOne({ email: req.body.email });
+
+      if (!user) {
+        return res.status(404).json({ msg: "Email is not registered!" });
+      }
+
+      if (!(await bcrypt.compare(req.body.password, user.password))) {
+        return res.status(401).json({ msg: "Password is incorrect!" });
+      }
     }
+
+    const accessToken = jwt.sign(
+      { username: user.username, email: user.email, id: user._id },
+      process.env.key,
+      { expiresIn: "10h" }
+    );
+
+    return res.status(200).json({
+      user,
+      accessToken,
+    });
   } catch (error) {
-    // console.error("Error in logUser:", error);
-    if (error) {
-      res.status(500).json({ msg: "Internal Server Error" });
-    }
+    console.error("Error in logUser:", error);
+    res.status(500).json({ msg: "Internal Server Error" });
   }
 };

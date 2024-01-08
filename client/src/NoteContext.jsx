@@ -1,26 +1,33 @@
 // NoteContext.js
 import { createContext, useContext, useState, useEffect } from "react";
 import axios from "axios";
-
+import { FeedbackDisplay } from "./components/FeedbackDisplay";
 const NoteContext = createContext();
 
 export const NoteProvider = ({ children }) => {
   const [notes, setNotes] = useState([]);
+  const [err, setErr] = useState(null);
+  const [accessToken, setAccessToken] = useState(() => {
+    return localStorage.getItem("accessToken") || null;
+  });
+  const baseURL = import.meta.env.VITE_SCRIBE_BASE_URL;
 
   const fetchNotes = async () => {
     try {
       const headers = {
-        Authorization:
-          "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IkpvaG4iLCJlbWFpbCI6ImpvaG5AZ21haWwuY29tIiwiaWQiOiI2NTk4YzlmMTI2ZDVkNjhmZTE4ZTYyZGYiLCJpYXQiOjE3MDQ2MDcxMTEsImV4cCI6MTcwNDY0MzExMX0.hzKvGu8BZzZd5dw48xVrtvxDiO0-5pMlOYTp5OgYxp4",
+        Authorization: `Bearer ${accessToken}`,
       };
 
-      const response = await axios.get("http://localhost:5000/api/notes", {
+      const response = await axios.get(`${baseURL}/api/notes`, {
         headers,
       });
 
       setNotes(response.data);
     } catch (error) {
-      console.error("Error fetching notes:", error);
+      // console.error("Error fetching notes:", error);
+      const msg = error.response.data.message;
+      // console.log(msg);
+      setErr(msg);
     }
   };
 
@@ -33,8 +40,17 @@ export const NoteProvider = ({ children }) => {
   };
 
   return (
-    <NoteContext.Provider value={{ notes, addNote, fetchNotes, setNotes }}>
+    <NoteContext.Provider
+      value={{
+        notes,
+        addNote,
+        fetchNotes,
+        setNotes,
+        accessToken,
+      }}
+    >
       {children}
+      {err ? <FeedbackDisplay error={err} /> : ""}
     </NoteContext.Provider>
   );
 };

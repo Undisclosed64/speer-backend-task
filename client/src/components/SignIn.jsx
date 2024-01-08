@@ -5,37 +5,32 @@ import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { FeedbackDisplay } from "./FeedbackDisplay";
 
-export const SignUp = () => {
+export const SignIn = () => {
   const [data, setData] = useState({
     email: "",
-    username: "",
     password: "",
   });
-  const navigate = useNavigate();
   const [err, setErr] = useState(null);
+  const navigate = useNavigate();
   const baseURL = import.meta.env.VITE_SCRIBE_BASE_URL;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (data.email === "" || data.password === "" || data.password === "") {
+    if (data.email === "" || data.password === "") {
       setErr("Please fill in the input fields");
       setTimeout(() => {
         setErr(null);
       }, 1500);
       return;
     }
-
     try {
-      const res = await axios.post(`${baseURL}/api/auth/signup`, data);
+      const res = await axios.post(`${baseURL}/api/auth/login`, data);
       // console.log(res.data);
-      const token = res.data.accessToken;
-      localStorage.removeItem("accessToken");
-      localStorage.setItem("accessToken", token);
-      await navigate("/");
+      localStorage.setItem("accessToken", res.data.accessToken);
+      navigate("/");
     } catch (err) {
       // console.log(err);
-      const error = err.response.data.errors[0].msg;
-      setErr(error);
+      setErr(err.response.data.msg);
       setTimeout(() => {
         setErr(null);
       }, 1500);
@@ -63,10 +58,12 @@ export const SignUp = () => {
       }, 1500);
     }
   };
+
   return (
     <div className="form-page flex h-screen w-screen">
       <div className="left  w-1/3">
         {/* video credits: Dribble */}
+
         <video
           className="w-full h-full object-cover"
           autoPlay
@@ -87,7 +84,7 @@ export const SignUp = () => {
           <div className="sm:w-full sm:max-w-md">
             <MdOutlineStickyNote2 className="text-blue mx-auto h-16 w-auto mb-6" />
             <h2 className="text-center text-3xl font-bold text-gray-900 mb-10">
-              Sign up to Scribe
+              Sign in to your account
             </h2>
 
             <form
@@ -111,26 +108,6 @@ export const SignUp = () => {
                     className="block w-full rounded-md border border-gray-300 py-2 px-3 placeholder-gray-400 focus:outline-none focus:ring focus:border-indigo-600 text-sm"
                     onChange={(e) =>
                       setData({ ...data, email: e.target.value })
-                    }
-                  />
-                </div>
-              </div>
-              <div>
-                <label
-                  htmlFor="username"
-                  className="block text-sm font-medium text-gray-900"
-                >
-                  Username
-                </label>
-                <div className="mt-2">
-                  <input
-                    id="username"
-                    name="username"
-                    type="text"
-                    autoComplete="username"
-                    className="block w-full rounded-md border border-gray-300 py-2 px-3 placeholder-gray-400 focus:outline-none focus:ring focus:border-indigo-600 text-sm"
-                    onChange={(e) =>
-                      setData({ ...data, username: e.target.value })
                     }
                   />
                 </div>
@@ -164,16 +141,16 @@ export const SignUp = () => {
                   type="submit"
                   className="flex w-full justify-center rounded-md bg-black px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-gray-800 focus:outline-none"
                 >
-                  Sign up
+                  Sign in
                 </button>
               </div>
             </form>
 
             <div className="mt-4 text-center text-[#3d3d4e]">
               <p className="text-sm">
-                Already have an account?
-                <Link to="/sign-in" className="ml-2 underline">
-                  Sign in
+                Don't have an account?
+                <Link className="ml-2 underline" to={`/sign-up`}>
+                  Sign up
                 </Link>
               </p>
               <p className="mt-2 text-sm">

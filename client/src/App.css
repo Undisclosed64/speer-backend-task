@@ -9,6 +9,9 @@
   gap: 30px;
   max-width: 1000px;
 }
+.note-details {
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+}
 .el {
   border-radius: 20px;
 }
@@ -18,4 +21,15 @@
     mask-image: paint(smooth-corners);
     --smooth-corners: 10;
   }
+}
+.note-viewer-container {
+  background-color: #ffffff;
+  opacity: 0.8;
+  background-image: radial-gradient(#000000 0.5px, transparent 0.5px),
+    radial-gradient(#000000 0.5px, #ffffff 0.5px);
+  background-size: 20px 20px;
+  background-position: 0 0, 10px 10px;
+}
+.shared-note {
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
 }

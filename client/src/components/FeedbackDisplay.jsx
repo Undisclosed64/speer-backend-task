@@ -1,7 +1,7 @@
 import { IoCheckmarkDoneCircle } from "react-icons/io5";
 import { FiAlertTriangle } from "react-icons/fi";
 
-export const ErrorMsg = ({ success, error }) => {
+export const FeedbackDisplay = ({ success, error }) => {
   return (
     <div className="flex justify-center">
       {success ? (
