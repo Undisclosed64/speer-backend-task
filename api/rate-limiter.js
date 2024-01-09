@@ -1,6 +1,8 @@
 const Redis = require("ioredis");
 const moment = require("moment");
-const redisClient = new Redis({ url: "redis://localhost:6379" });
+const redisClient = new Redis({
+  url: process.env.REDIS_URL || "redis://localhost:6379",
+});
 
 const RATELIMIT_DURATION_IN_SECONDS = 60;
 const NUMBER_OF_REQUEST_ALLOWED = 200;
