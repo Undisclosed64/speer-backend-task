@@ -12,14 +12,13 @@ mongoose.connect(process.env.MONGODB_URI, {
 const db = mongoose.connection;
 db.on("error", console.error.bind(console, "MongoDB connection error:"));
 
-// const corsOptions = {
-//   origin: ["https://scribe-note-taker.vercel.app", "http://localhost:5173"],
-//   methods: "GET,PUT,POST,DELETE",
-//   credentials: true,
-//   optionsSuccessStatus: 204,
-// };
+const corsOptions = {
+  origin: ["https://scribe-note-taker.vercel.app", "http://localhost:5173"],
+  credentials: true,
+  optionsSuccessStatus: 200,
+};
 
-app.use(cors());
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use("/api", userRouter, notesRouter);
