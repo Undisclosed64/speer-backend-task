@@ -14,7 +14,7 @@ db.on("error", console.error.bind(console, "MongoDB connection error:"));
 app.use(express.json());
 
 const corsOptions = {
-  origin: ["https://scribe-note-taker.vercel.app", "http://localhost:3000"],
+  origin: ["https://scribe-note-taker.vercel.app", "http://localhost:5173"],
   methods: "GET,PUT,POST,DELETE",
   credentials: true,
   optionsSuccessStatus: 204,
