@@ -128,7 +128,7 @@ exports.shareNote = async (req, res) => {
     // Generate a unique shareable link
     const shareableLink = shortid.generate();
 
-    const sharedNote = await Note.updateOne(
+    await Note.updateOne(
       { _id: noteId },
       { $set: { shareableLink: shareableLink } },
       { upsert: true }
