@@ -132,6 +132,8 @@ const Note = () => {
       );
       setShareLink(response.data.fullShareableLink);
     } catch (error) {
+      console.log(error);
+      console.log(error);
       // console.error("Error fetching share link:", error);
       setErr(error.response.data.message);
       setTimeout(() => {
