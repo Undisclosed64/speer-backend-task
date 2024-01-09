@@ -11,7 +11,6 @@ import { SignUp } from "./components/Signup.jsx";
 import { useNavigate } from "react-router-dom";
 
 const isAuthenticated = () => {
-  // Check if the user is authenticated based on your authentication logic.
   const accessToken = localStorage.getItem("accessToken");
   return accessToken !== null;
 };
@@ -21,7 +20,7 @@ const AuthenticatedRoute = ({ element }) => {
 
   React.useEffect(() => {
     if (!isAuthenticated()) {
-      // Redirect to sign-in page if not authenticated
+      // redirect to sign-in page if not authenticated
       navigate("/sign-in");
     }
   }, [navigate]);

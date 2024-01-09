@@ -32,7 +32,6 @@ const Note = () => {
   const baseURL = import.meta.env.VITE_SCRIBE_BASE_URL;
 
   useEffect(() => {
-    console.log(id);
     const getNote = async () => {
       try {
         const response = await axios.get(`${baseURL}/api/notes/${id}`, {
@@ -45,7 +44,7 @@ const Note = () => {
       } catch (err) {
         const errMsg = err.response.data.message;
         setErr(errMsg);
-        // console.log(err);
+        console.log(err);
         setTimeout(() => {
           setErr(null);
         }, 1500);
@@ -80,7 +79,7 @@ const Note = () => {
       setNote(response.data);
       setIsEditing(false);
     } catch (error) {
-      console.error("Error updating note:", error);
+      console.log("Error updating note:", error);
       setErr("Error updating note");
       setTimeout(() => {
         setErr(null);
@@ -132,7 +131,6 @@ const Note = () => {
       );
       setShareLink(response.data.fullShareableLink);
     } catch (error) {
-      console.log(error);
       console.log(error);
       // console.error("Error fetching share link:", error);
       setErr(error.response.data.message);
