@@ -134,7 +134,7 @@ exports.shareNote = async (req, res) => {
       { upsert: true }
     ).exec();
 
-    const fullShareableLink = `http://localhost:5173/notes/shared/${shareableLink}`;
+    const fullShareableLink = `https://scribe-note-taker.vercel.app/notes/shared/${shareableLink}`;
 
     // Provide the shareable link to the user
     res.status(200).json({ fullShareableLink });
