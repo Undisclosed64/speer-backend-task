@@ -76,17 +76,17 @@ const Sidebar = () => {
   };
   return (
     <div
-      className="sidebar w-1/6  border-r border-[#e5e5e5] flex flex-col items-center gap-20 p-5"
+      className="sidebar w-1/6  border-r border-[#e5e5e5] flex flex-col items-center gap-24 p-5"
       style={sidebarStyle}
     >
       <div className="brand-name flex items-center text-brightblack">
-        <div className="text-5xl mr-2">
+        <div className="text-3xl mr-2">
           <MdOutlineStickyNote2 className="text-blue" />
         </div>
-        <h2 className="text-4xl font-bold">Scribe</h2>
+        <h2 className="text-2xl font-bold">Scribe</h2>
       </div>
       <div className="add-btn cursor-pointer" onClick={openAddNoteModal}>
-        <IoIosAddCircle className="text-5xl text-brightblack" />
+        <IoIosAddCircle className="text-6xl text-brightblack" />
       </div>
       {/* Add Note Modal */}
 
