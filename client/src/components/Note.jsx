@@ -11,6 +11,7 @@ import { ShareNoteModal } from "./ShareNoteModal";
 import { DeleteConfirmationModal } from "./DeleteConfirmationModal";
 import { FeedbackDisplay } from "./FeedbackDisplay";
 import { TailSpin } from "react-loader-spinner";
+import Skeleton from "react-loading-skeleton";
 
 const Note = () => {
   const [note, setNote] = useState(null);
@@ -142,19 +143,21 @@ const Note = () => {
 
   return (
     <div className="flex items-center justify-center min-h-screen mx-20 py-5">
-      {loading ? (
-        <div className="loader-container">
-          <TailSpin
-            visible={true}
-            height="80"
-            width="80"
-            color="#5044e4"
-            ariaLabel="tail-spin-loading"
-            radius="1"
-            wrapperStyle={{}}
-            wrapperClass=""
-            loading={loading}
-          />
+      {!note ? (
+        <div className="min-w-[600px]">
+          <div className="loader-container">
+            <TailSpin
+              visible={true}
+              height="80"
+              width="80"
+              color="#5044e4"
+              ariaLabel="tail-spin-loading"
+              radius="1"
+              wrapperStyle={{}}
+              wrapperClass=""
+              loading={loading}
+            />
+          </div>
         </div>
       ) : (
         <div className="note-details max-w-2xl w-full p-6 rounded-lg min-w-[600px]">
