@@ -4,7 +4,6 @@ import { useNavigate } from "react-router-dom";
 import { useNoteContext } from "../NoteContext";
 import { FormatDate } from "./FormatDate";
 import { SearchByKeyword } from "./SearchByKeyword";
-import { useRef } from "react";
 
 const Notes = () => {
   const navigate = useNavigate();
@@ -39,12 +38,10 @@ const Notes = () => {
     };
   };
 
-  const debouncedSearch = useRef(
-    debounceSearch((value) => {
-      setKeyword(value);
-      setSearchActive(true);
-    }, 300)
-  ).current;
+  const debouncedSearch = debounceSearch(async (value) => {
+    setKeyword(value);
+    setSearchActive(true);
+  }, 300);
 
   return (
     <div className="main px-20 py-5 mb-10 ">
