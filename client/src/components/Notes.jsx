@@ -24,7 +24,9 @@ const Notes = () => {
   useEffect(() => {}, [keyword]);
 
   const getNoteDetails = async (id) => {
-    navigate(`notes/${id}`);
+    if (id) {
+      navigate(`notes/${id}`);
+    }
   };
 
   const debounceSearch = (func, delay) => {
