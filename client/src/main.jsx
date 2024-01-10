@@ -9,10 +9,20 @@ import SharedNoteView from "./components/SharedNoteView.jsx";
 import { SignIn } from "./components/SignIn.jsx";
 import { SignUp } from "./components/Signup.jsx";
 import { useNavigate } from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
 
 const isAuthenticated = () => {
   const accessToken = localStorage.getItem("accessToken");
-  return accessToken !== null;
+
+  if (accessToken) {
+    const decodedToken = jwtDecode(accessToken);
+
+    const isTokenValid = decodedToken.exp * 1000 > Date.now();
+
+    return isTokenValid;
+  }
+
+  return false;
 };
 
 const AuthenticatedRoute = ({ element }) => {
