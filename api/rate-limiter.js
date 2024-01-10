@@ -1,17 +1,25 @@
-const Redis = require("ioredis");
+const redis = require("ioredis");
 const moment = require("moment");
-const redisClient = new Redis({
-  url: process.env.REDIS_URL || "redis://localhost:6379",
+// const redisClient = new Redis({
+//   url: process.env.REDIS_URL || "redis://localhost:6379",
+// });
+
+const redisClient = redis.createClient({
+  password: "*******",
+  socket: {
+    host: "redis-16335.c301.ap-south-1-1.ec2.cloud.redislabs.com",
+    port: 16335,
+  },
 });
 
 const RATELIMIT_DURATION_IN_SECONDS = 60;
-const NUMBER_OF_REQUEST_ALLOWED = 200;
+const NUMBER_OF_REQUEST_ALLOWED = 15;
 
 module.exports = {
   rateLimitter: async (req, res, next) => {
     const userId = req.user.id;
     const currentTime = moment().unix();
-    // console.log(currentTime);
+    console.log(currentTime);
 
     const result = await redisClient.hgetall(userId);
     if (Object.keys(result).length === 0) {
