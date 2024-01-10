@@ -74,7 +74,7 @@ const Notes = () => {
             {notes.map((note, index) => {
               return (
                 <div
-                  className={`el p-6 h-64 text-brightblack flex flex-col cursor-pointer justify-between ${
+                  className={`el p-6 h-64 text-brightblack flex flex-col cursor-pointer justify-between transform transition-transform duration-300 ease-in-out hover:scale-105 ${
                     colors[index % colors.length]
                   }`}
                   onClick={() => getNoteDetails(note._id)}
