@@ -31,7 +31,7 @@ export const SignUp = () => {
       const token = res.data.accessToken;
       localStorage.removeItem("accessToken");
       localStorage.setItem("accessToken", token);
-      await navigate("/");
+      navigate("/sign-in");
     } catch (err) {
       // console.log(err);
       const error = err.response.data.errors[0].msg;
