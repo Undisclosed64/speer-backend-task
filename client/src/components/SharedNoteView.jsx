@@ -52,10 +52,10 @@ const SharedNoteView = () => {
       ) : (
         <>
           <div className="brand-name flex items-center mb-20 p-10 text-brightblack">
-            <div className="text-5xl mr-2">
-              <MdOutlineStickyNote2 />
+            <div className="mr-2 text-3xl ">
+              <MdOutlineStickyNote2 className="text-blue" />
             </div>
-            <h1 className="text-4xl font-bold ">Scribe</h1>
+            <h1 className="text-2xl font-bold ">Scribe</h1>
           </div>
           <div className="shared-note max-w-2xl mx-auto bg-white p-8 el">
             <h1
