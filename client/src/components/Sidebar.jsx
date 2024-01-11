@@ -5,7 +5,7 @@ import axios from "axios";
 import { useNoteContext } from "../NoteContext";
 import { MdOutlineStickyNote2 } from "react-icons/md";
 import { FeedbackDisplay } from "./FeedbackDisplay";
-
+import { TailSpin } from "react-loader-spinner";
 import { useState } from "react";
 
 const Sidebar = () => {
@@ -17,6 +17,7 @@ const Sidebar = () => {
   const { addNote, accessToken } = useNoteContext();
   const [err, setErr] = useState(null);
   const [success, setSuccess] = useState(null);
+  const [loading, setLoading] = useState(false);
   const baseURL = import.meta.env.VITE_SCRIBE_BASE_URL;
 
   const colors = [
@@ -39,6 +40,9 @@ const Sidebar = () => {
 
   const saveNoteHandler = async (e) => {
     e.preventDefault();
+    if (loading) {
+      return;
+    }
     if (!formData.title || !formData.content) {
       setErr("Please fill in the fields");
       setTimeout(() => {
@@ -48,6 +52,7 @@ const Sidebar = () => {
     }
 
     try {
+      setLoading(true);
       const response = await axios.post(`${baseURL}/api/notes`, formData, {
         headers,
       });
@@ -66,6 +71,8 @@ const Sidebar = () => {
         setErr(null);
       }, 1500);
       // console.log(err);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -97,14 +104,29 @@ const Sidebar = () => {
               className="cursor-pointer text-2xl"
               onClick={closeAddNoteModal}
             />
-            {/* Save Button */}
-            <button
-              className="bg-brightblack text-white px-4 py-2 rounded-full flex items-center justify-between text-sm transition-all duration-300 focus:outline-none hover:bg-[#333] active:bg-[#222]"
-              onClick={(e) => saveNoteHandler(e)}
-            >
-              <span className="mr-2">Save</span>
-              <IoCheckmarkSharp />
-            </button>
+            {loading ? (
+              <button className="bg-brightblack text-white px-4 py-2 rounded-full flex items-center justify-between text-sm transition-all duration-300 focus:outline-none hover:bg-[#333] active:bg-[#222]">
+                <span className="mr-2">
+                  <TailSpin
+                    height="20"
+                    width="20"
+                    color="white"
+                    wrapperStyle={{}}
+                    wrapperClass=""
+                    visible={true}
+                    ariaLabel="oval-loading"
+                  />
+                </span>
+              </button>
+            ) : (
+              <button
+                className="bg-brightblack text-white px-4 py-2 rounded-full flex items-center justify-between text-sm transition-all duration-300 focus:outline-none hover:bg-[#333] active:bg-[#222]"
+                onClick={(e) => saveNoteHandler(e)}
+              >
+                <span className="mr-2">Save</span>
+                <IoCheckmarkSharp />
+              </button>
+            )}
           </div>
           <div className="modal-content p-4">
             {/* Title Input */}
