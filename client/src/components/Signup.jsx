@@ -4,6 +4,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { FeedbackDisplay } from "./FeedbackDisplay";
+import { TailSpin } from "react-loader-spinner";
 
 export const SignUp = () => {
   const [data, setData] = useState({
@@ -11,12 +12,16 @@ export const SignUp = () => {
     username: "",
     password: "",
   });
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const [err, setErr] = useState(null);
   const baseURL = import.meta.env.VITE_SCRIBE_BASE_URL;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (loading) {
+      return;
+    }
     if (data.email === "" || data.password === "" || data.password === "") {
       setErr("Please fill in the input fields");
       setTimeout(() => {
@@ -26,6 +31,7 @@ export const SignUp = () => {
     }
 
     try {
+      setLoading(true);
       const res = await axios.post(`${baseURL}/api/auth/signup`, data);
       // console.log(res.data);
       const token = res.data.accessToken;
@@ -39,6 +45,8 @@ export const SignUp = () => {
       setTimeout(() => {
         setErr(null);
       }, 1500);
+    } finally {
+      setLoading(false);
     }
   };
   const signInAsDemoUser = async () => {
@@ -160,12 +168,29 @@ export const SignUp = () => {
               </div>
 
               <div>
-                <button
-                  type="submit"
-                  className="flex w-full justify-center rounded-md bg-black px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-gray-800 focus:outline-none"
-                >
-                  Sign up
-                </button>
+                {loading ? (
+                  <button
+                    type="submit"
+                    className="flex w-full justify-center rounded-md bg-black px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-gray-800 focus:outline-none"
+                  >
+                    <TailSpin
+                      height="20"
+                      width="20"
+                      color="white"
+                      wrapperStyle={{}}
+                      wrapperClass=""
+                      visible={true}
+                      ariaLabel="oval-loading"
+                    />
+                  </button>
+                ) : (
+                  <button
+                    type="submit"
+                    className="flex w-full justify-center rounded-md bg-black px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-gray-800 focus:outline-none"
+                  >
+                    Sign up
+                  </button>
+                )}
               </div>
             </form>
 
