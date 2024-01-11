@@ -37,7 +37,7 @@ export const NoteProvider = ({ children }) => {
 
   useEffect(() => {
     fetchNotes();
-  }, []);
+  }, [fetchNotes]);
 
   const addNote = (newNote) => {
     setNotes([...notes, newNote]);
