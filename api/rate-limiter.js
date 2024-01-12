@@ -8,7 +8,7 @@ const redisClient = new Redis({
 });
 
 const RATELIMIT_DURATION_IN_SECONDS = 60;
-const NUMBER_OF_REQUEST_ALLOWED = 10;
+const NUMBER_OF_REQUEST_ALLOWED = 30;
 
 module.exports = {
   rateLimitter: async (req, res, next) => {
