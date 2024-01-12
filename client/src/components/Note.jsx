@@ -11,13 +11,12 @@ import { ShareNoteModal } from "./ShareNoteModal";
 import { DeleteConfirmationModal } from "./DeleteConfirmationModal";
 import { FeedbackDisplay } from "./FeedbackDisplay";
 import { TailSpin } from "react-loader-spinner";
-import Skeleton from "react-loading-skeleton";
 
 const Note = () => {
   const [note, setNote] = useState(null);
   const [err, setErr] = useState(null);
   const [success, setSuccess] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const { id } = useParams();
   const [isEditing, setIsEditing] = useState(false);
   const [editedTitle, setEditedTitle] = useState("");
@@ -81,7 +80,8 @@ const Note = () => {
       setIsEditing(false);
     } catch (error) {
       console.log("Error updating note:", error);
-      setErr("Error updating note");
+      const err = error.response.data.message;
+      setErr(err);
       setTimeout(() => {
         setErr(null);
       }, 1500);
@@ -185,14 +185,14 @@ const Note = () => {
               />
               <div className="flex items-center space-x-4">
                 <button
-                  className="bg-brightblack text-white px-4 py-2 rounded-full flex items-center justify-between text-sm transition-all duration-300"
+                  className="bg-brightblack text-white px-4 py-2 flex items-center justify-between text-sm transition-all duration-300"
                   onClick={handleSaveEdit}
                 >
                   <span className="mr-2">Save</span>
                   <IoCheckmarkSharp />
                 </button>
                 <button
-                  className="text-sm text-gray-500"
+                  className="text-sm text-gray-500 "
                   onClick={handleCancelEdit}
                 >
                   Cancel
