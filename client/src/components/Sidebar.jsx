@@ -14,7 +14,7 @@ const Sidebar = () => {
     title: "",
     content: "",
   });
-  const { addNote, accessToken } = useNoteContext();
+  const { addNote, accessToken, fetchNotes } = useNoteContext();
   const [err, setErr] = useState(null);
   const [success, setSuccess] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -56,7 +56,7 @@ const Sidebar = () => {
       const response = await axios.post(`${baseURL}/api/notes`, formData, {
         headers,
       });
-      //   console.log(response.data);
+      console.log(response.data);
       addNote(response.data);
       // console.log(response);
       setSuccess("Note created successfully!");
@@ -65,6 +65,7 @@ const Sidebar = () => {
         setSuccess(null);
       }, 1500);
       closeAddNoteModal();
+      fetchNotes();
     } catch (err) {
       setErr(err.response.data.message);
       setTimeout(() => {
@@ -78,6 +79,7 @@ const Sidebar = () => {
 
   const sidebarStyle = {
     width: isAddNoteModalOpen ? "30%" : "16.666667%",
+    minWidth: isAddNoteModalOpen ? "300px" : "100px",
     minHeight: "100vh",
     transition: "width 0.3s ease-in-out",
   };
