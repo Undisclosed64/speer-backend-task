@@ -36,7 +36,7 @@ export const ShareNoteModal = ({ onClose, shareLink }) => {
             </div>
             <div className="flex justify-between items-center">
               <button
-                className={`bg-brightblack text-white px-6 py-3 rounded-full text-lg focus:outline-none flex items-center ${
+                className={`bg-brightblack text-white px-4 py-2 rounded-full text-lg focus:outline-none flex items-center ${
                   isCopied ? styles.copiedButton : ""
                 }`}
                 onClick={handleCopyToClipboard}
