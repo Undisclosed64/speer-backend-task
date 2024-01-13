@@ -56,7 +56,7 @@ const Sidebar = () => {
       const response = await axios.post(`${baseURL}/api/notes`, formData, {
         headers,
       });
-      console.log(response.data);
+      // console.log(response.data);
       addNote(response.data);
       // console.log(response);
       setSuccess("Note created successfully!");
