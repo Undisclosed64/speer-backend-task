@@ -12,8 +12,6 @@ export const NoteProvider = ({ children }) => {
   const baseURL = import.meta.env.VITE_SCRIBE_BASE_URL;
 
   const fetchNotes = async () => {
-    console.log(baseURL);
-
     try {
       const headers = {
         Authorization: `Bearer ${accessToken}`,
