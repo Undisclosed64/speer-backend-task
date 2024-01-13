@@ -54,8 +54,12 @@ export const SignUp = () => {
       email: "johndoe@gmail.com",
       password: "demopassword",
     };
+    if (loading) {
+      return;
+    }
 
     try {
+      setLoading(true);
       const res = await axios.post(
         `${baseURL}/api/auth/login`,
         demoUserCredentials
@@ -69,6 +73,8 @@ export const SignUp = () => {
       setTimeout(() => {
         setErr(null);
       }, 1500);
+    } finally {
+      setLoading(false);
     }
   };
   return (
@@ -203,12 +209,21 @@ export const SignUp = () => {
               </p>
               <p className="mt-2 text-sm">
                 Or
-                <button
-                  className="ml-2 font-semibold focus:outline-none"
-                  onClick={() => signInAsDemoUser()}
-                >
-                  Sign in as demo user
-                </button>
+                {loading ? (
+                  <button
+                    className="ml-2 font-semibold focus:outline-none"
+                    onClick={() => signInAsDemoUser()}
+                  >
+                    Signing you in...
+                  </button>
+                ) : (
+                  <button
+                    className="ml-2 font-semibold focus:outline-none"
+                    onClick={() => signInAsDemoUser()}
+                  >
+                    Sign in as demo user
+                  </button>
+                )}
               </p>
             </div>
           </div>
