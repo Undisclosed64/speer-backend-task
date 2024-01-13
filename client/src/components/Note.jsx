@@ -78,6 +78,7 @@ const Note = () => {
       }, 1500);
       setNote(response.data);
       setIsEditing(false);
+      fetchNotes();
     } catch (error) {
       console.log("Error updating note:", error);
       const err = error.response.data.message;
