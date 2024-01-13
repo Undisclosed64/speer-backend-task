@@ -19,7 +19,7 @@ export const SignIn = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (loading) {
-      return; //to prevent multiple submissions
+      return;
     }
     if (data.email === "" || data.password === "") {
       setErr("Please fill in the input fields");
@@ -47,10 +47,13 @@ export const SignIn = () => {
   const signInAsDemoUser = async () => {
     const demoUserCredentials = {
       email: "johndoe@gmail.com",
-      password: "demopassword",
     };
 
+    if (loading) {
+      return;
+    }
     try {
+      setLoading(true);
       const res = await axios.post(
         `${baseURL}/api/auth/login`,
         demoUserCredentials
@@ -64,6 +67,8 @@ export const SignIn = () => {
       setTimeout(() => {
         setErr(null);
       }, 1500);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -180,12 +185,21 @@ export const SignIn = () => {
               </p>
               <p className="mt-2 text-sm">
                 Or
-                <button
-                  className="ml-2 font-semibold focus:outline-none"
-                  onClick={() => signInAsDemoUser()}
-                >
-                  Sign in as demo user
-                </button>
+                {loading ? (
+                  <button
+                    className="ml-2 font-semibold focus:outline-none"
+                    onClick={() => signInAsDemoUser()}
+                  >
+                    Signing you in...
+                  </button>
+                ) : (
+                  <button
+                    className="ml-2 font-semibold focus:outline-none"
+                    onClick={() => signInAsDemoUser()}
+                  >
+                    Sign in as demo user
+                  </button>
+                )}
               </p>
             </div>
           </div>
